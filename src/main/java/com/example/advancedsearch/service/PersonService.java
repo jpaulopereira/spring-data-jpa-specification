@@ -1,17 +1,18 @@
 package com.example.advancedsearch.service;
 
 import com.example.advancedsearch.dto.PersonFilterDTO;
-import com.example.advancedsearch.enums.MaritalStatus;
+import com.example.advancedsearch.dto.PersonResponseDTO;
 import com.example.advancedsearch.model.Person;
 import com.example.advancedsearch.repository.PersonRepository;
 import com.example.advancedsearch.specification.PersonSpecification;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -28,24 +29,36 @@ public class PersonService {
         return this.personRepository.findAll(this.personSpecification.persons(filter), pageable);
     }
 
-    public Page<Person> searchPersons(
-            String name,
-            String email,
-            String maritalStatus,
-            String district,
-            String city,
-            String state,
-            LocalDate initialBirthday,
-            LocalDate finalBirthday,
-            Pageable pageable
-    ) {
-        MaritalStatus maritalStatusEnum = null;
-        if (maritalStatus != null) {
-            maritalStatusEnum = MaritalStatus.valueOf(maritalStatus.toUpperCase());
-        }
-        return personRepository.searchPersons(
-                name, email, maritalStatusEnum, district, city, state, initialBirthday, finalBirthday, pageable
+    public Page<PersonResponseDTO> searchPersons(PersonFilterDTO filter, Pageable pageable) {
+        Page<Person> personPage = personRepository.searchPersons(
+                filter.getName(),
+                filter.getEmail(),
+                filter.getMaritalStatus(),
+                filter.getDistrict(),
+                filter.getCity(),
+                filter.getState(),
+                filter.getInitialBirthday(),
+                filter.getFinalBirthday(),
+                pageable
         );
+        List<PersonResponseDTO> dtoList = personPage.getContent().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(dtoList, pageable, personPage.getTotalElements());
+    }
+
+    private PersonResponseDTO convertToDTO(Person person) {
+        PersonResponseDTO dto = new PersonResponseDTO();
+        dto.setId(person.getId());
+        dto.setName(person.getName());
+        dto.setEmail(person.getEmail());
+        dto.setMaritalStatus(person.getMaritalStatus());
+        dto.setDistrict(person.getDistrict());
+        dto.setCity(person.getCity());
+        dto.setState(person.getState());
+        dto.setBirthday(person.getBirthday());
+        return dto;
     }
 }
 
