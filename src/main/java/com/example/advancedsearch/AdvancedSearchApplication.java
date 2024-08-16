@@ -20,7 +20,7 @@ public class AdvancedSearchApplication {
     @Bean
     CommandLineRunner run(PersonRepository personRepository) {
         return args -> {
-            personRepository.save(new Person("Pedro", "pedro@gmail.com", MaritalStatus.MARRIED, "Tijuca", "Rio de Janeiro", "RJ", LocalDate.of(1992, 8, 28)));
+            personRepository.save(new Person("Joao", "Joao@gmail.com", MaritalStatus.SINGLE, " ", "Juiz de Fora", "MG", LocalDate.of(1991, 4, 11)));
             personRepository.save(new Person("Marcos", "marcos@gmail.com", MaritalStatus.DIVORCED, "Tijuca", "Rio de Janeiro", "RJ", LocalDate.of(1990, 2, 11)));
             personRepository.save(new Person("Paulo", "paulo@gmail.com", MaritalStatus.SINGLE, "Tijuca", "Rio de Janeiro", "RJ", LocalDate.of(1988, 3, 12)));
             personRepository.save(new Person("Vinicios", "vinicios@gmail.com", MaritalStatus.SINGLE, "Tijuca", "Rio de Janeiro", "RJ", LocalDate.of(1996, 7, 18)));

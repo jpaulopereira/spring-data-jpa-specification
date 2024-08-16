@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class PersonFilter {
+public class PersonFilterDTO {
 
     private String name;
     private String email;
